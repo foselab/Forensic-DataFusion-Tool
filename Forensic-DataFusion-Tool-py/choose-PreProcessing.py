@@ -4,8 +4,8 @@
 import tkinter as tk
 from tkinter import *
 from data_removal import dataRemoval
-from Pre_Processing import PreProcessing
-from scelta_Exploration  import apriSceltaExploration
+from pre_processing import PreProcessing
+from exploration  import apriSceltaExploration
 
         
 def openDataRemoval():

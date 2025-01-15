@@ -8,12 +8,12 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt #traditional plots
 import plotly.express as px #dynamic plots
-from stampa_tabelle import stampaTabelle
+from print_table import stampaTabelle
 import scipy.stats
 import os
-import webview
-from stampa_tabelle import stampaTabelle
-from sklearn import decomposition
+# import webview
+from print_table import stampaTabelle
+from scikit import decomposition
 
 """Ricezione dati"""
 def passaggioColonne(colonne):

@@ -2,9 +2,9 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 import pandas as pd
-from Pre_Processing import passaggioPreProcessing
-from stampa_tabelle import stampaTabelle
-from scelta_Exploration import passaggioExploration
+from pre_processing import passaggioPreProcessing
+from print_table import stampaTabelle
+from exploration import passaggioExploration
 
 def passaggiodataremoval(dati,num):
     global Dati

@@ -3,9 +3,9 @@
 """"Importazione librerie e funzioni presenti in altre pagine"""
 import tkinter as tk
 from tkinter import *
-from pagina_iniziale import apriPagina_iniziale
+from initial_page import apriPagina_iniziale
 from PIL import ImageTk, Image
-from istruzioni import apripdf
+from instruction import apripdf
 import sys
 import os
 
