@@ -1,11 +1,11 @@
 """" Developed by Michele Verdi"""
 
 """"Importazione funzioni da altre pagine"""
-from stampa_tabelle import stampaTabelle
+from print_table import stampaTabelle
 from data_removal import passaggiodataremoval
-from Pre_Processing import passaggioPreProcessing
-from scelta_Grafici import passaggioscelta_grafici
-from scelta_Exploration import passaggioExploration
+from pre_processing import passaggioPreProcessing
+from plots import passaggioscelta_grafici
+from exploration import passaggioExploration
 
 
 

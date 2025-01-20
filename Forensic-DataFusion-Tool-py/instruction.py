@@ -29,7 +29,7 @@ def apripdf():
     
    
     """Lettura del pdf e inserimento nella pagina"""
-    reader = PdfReader("Instruction.pdf")
+    reader = PdfReader("../documents/Instruction.pdf")
     testo = ""
     for page in reader.pages:
         testo += page.extract_text() + "\n"

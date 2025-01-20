@@ -9,14 +9,14 @@ import matplotlib.pyplot as plt #traditional plots
 import plotly.express as px #dynamic plots
 from sklearn.preprocessing import scale
 import numpy as np
-import webview
+# import webview
 import os
-from scelta_Exploration import passaggioAutoscaling
-from scelta_Exploration import passaggioMean
-from scelta_Exploration import passaggioSnv
-from scelta_Exploration import passaggioSavitzki
-from scelta_Exploration import passaggioSnv_savitzki
-from scelta_Exploration import passaggioColonne
+from exploration import passaggioAutoscaling
+from exploration import passaggioMean
+from exploration import passaggioSnv
+from exploration import passaggioSavitzki
+from exploration import passaggioSnv_savitzki
+from exploration import passaggioColonne
 from scipy.signal import savgol_filter
 
 

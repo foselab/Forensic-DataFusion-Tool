@@ -13,7 +13,7 @@ import scipy.stats
 import os
 # import webview
 from print_table import stampaTabelle
-from scikit import decomposition
+#from scikit import decomposition
 
 """Ricezione dati"""
 def passaggioColonne(colonne):

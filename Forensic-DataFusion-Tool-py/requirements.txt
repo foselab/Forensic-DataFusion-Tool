@@ -1,7 +1,8 @@
 plotly
-#webview
+webview
 scikit-learn
 pypdf
 seaborn
 pandastable
 pandastable
+#scikit

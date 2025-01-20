@@ -209,8 +209,8 @@ def apriSceltaGrafici():
         sns.displot(valori, x=variabile, hue = tipologia, kind = 'kde')
         
         numeric_data = valori.select_dtypes(include=[np.number])
-        sns.heatmap(numeric_data.corr(), annot=False, cmap='Reds', vmin=-1, vmax=1, ax=axs[1,0]);
-        sns.scatterplot(data=valori, x=variabile, y=variabile2, hue = tipologia, ax=axs[1,1]);
+        sns.heatmap(numeric_data.corr(), annot=False, cmap='Reds', vmin=-1, vmax=1, ax=axs[1,0])
+        sns.scatterplot(data=valori, x=variabile, y=variabile2, hue = tipologia, ax=axs[1,1])
         sns.set_style("whitegrid")
           
         """Creazione seconda immagine"""

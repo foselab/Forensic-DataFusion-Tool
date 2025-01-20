@@ -5,13 +5,13 @@ import tkinter as tk
 import pandas as pd
 from tkinter import *
 from tkinter import filedialog
-from tabelle import caricamentoTabelle
-from scelta_PreProcessing import apriSceltaOperazioni
-from scelta_Grafici import apriSceltaGrafici, elencofileSceltaGrafici
+from table import caricamentoTabelle
+from choose_PreProcessing import apriSceltaOperazioni
+from plots import apriSceltaGrafici, elencofileSceltaGrafici
 from data_removal import elencofile
-from scelta_Exploration import elencofileExploration
-from Pre_Processing import elencofileProcessing
-from scelta_Exploration import invioSource
+from exploration import elencofileExploration
+from pre_processing import elencofileProcessing
+from exploration import invioSource
 import os
 
 
