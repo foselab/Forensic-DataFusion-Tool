@@ -1,5 +1,5 @@
 from pandas import read_excel, DataFrame
-from Forensic_DataFusion_Tool_py.table import caricamentoTabelle
+from table import caricamentoTabelle
 
 def main():
     # where to put the data frame
@@ -11,7 +11,7 @@ def main():
     # just to test the reading
     #print(dataframe_collection[0].values)
 
-    caricamentoTabelle(dataframe_collection, n)
+    caricamentoTabelle(dataframe_collection, 0)
 
 
 

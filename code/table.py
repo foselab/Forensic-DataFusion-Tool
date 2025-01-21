@@ -1,11 +1,11 @@
 """" Developed by Michele Verdi"""
 
 """"Importazione funzioni da altre pagine"""
-from Forensic_DataFusion_Tool_py.print_table import stampaTabelle
-from Forensic_DataFusion_Tool_py.data_removal import passaggiodataremoval
-from Forensic_DataFusion_Tool_py.pre_processing import passaggioPreProcessing
-from Forensic_DataFusion_Tool_py.plots import passaggioscelta_grafici
-from Forensic_DataFusion_Tool_py.exploration import passaggioExploration
+from print_table import stampaTabelle
+from data_removal import passaggiodataremoval
+from pre_processing import passaggioPreProcessing
+from plots import passaggioscelta_grafici
+from exploration import passaggioExploration
 
 
 
