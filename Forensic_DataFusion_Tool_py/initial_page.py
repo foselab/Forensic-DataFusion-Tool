@@ -2,7 +2,7 @@
 
 """"Importazione librerie e funzioni delle altre pagine"""
 import tkinter as tk
-import pandas as pd
+from pandas import read_excel, DataFrame
 from tkinter import *
 from tkinter import filedialog
 from table import caricamentoTabelle
@@ -82,8 +82,8 @@ def apriPagina_iniziale():
             """controllo che il file sia di tipo excel"""
             try:
                 ext == '.xlsx'
-                Dati= pd.read_excel(x)
-                dataframe_collection[n] = pd.DataFrame(Dati)
+                Dati = read_excel(x)
+                dataframe_collection[n] = DataFrame(Dati)
                 caricamentoTabelle(dataframe_collection,n)
                 n+=1 
                 lbl = Label(frameDatabase, text="Elenco file inseriti: "+ elenco, font=('arial', 25), bd=18, bg="white")

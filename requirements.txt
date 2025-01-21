@@ -1,0 +1,16 @@
+plotly
+#webview
+webview_python
+scikit-learn
+pypdf
+seaborn
+pandastable
+pandastable
+#scikit
+future
+pillow
+pandas
+numpy
+matplotlib
+scipy
+openpyxl
