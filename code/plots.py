@@ -193,18 +193,19 @@ def apriSceltaGrafici():
         """Funzione per creare i grafici bivariati"""
         """Ricezione dati scelti e assegnazione a variabili"""
         valori=pd.DataFrame(Dati[indice])
+        valori.columns = valori.columns.astype(str)
         column_headers = list(valori.columns.values)
         tipologia=column_headers[1]
         tipologia=str(tipologia)
         variabile=str(selected_option2) 
-        variabile2=str(selected_option3) 
+        variabile2=str(selected_option3)
         
         """ Creazione prima immagine""" 
         fig1, axs=plt.subplots(ncols=2, nrows=2)
         fig1.suptitle('Grafici Bivariate')
         sns.set_style("whitegrid")
-        sns.histplot(ax=axs[0,0], data=valori, x=variabile, hue =tipologia) 
-        sns.histplot(ax=axs[0,1], data=valori, x=variabile, hue = tipologia, kde=True, stat='density')
+        sns.histplot(ax=axs[0,0], data=valori, x=variabile, hue=tipologia) 
+        sns.histplot(ax=axs[0,1], data=valori, x=variabile, hue=tipologia, kde=True, stat='density')
         
         sns.displot(valori, x=variabile, hue = tipologia, kind = 'kde')
         
@@ -231,6 +232,7 @@ def apriSceltaGrafici():
         """Funzione per creare i grafici bivariati"""
         """Ricezione dati scelti e assegnazione a variabili"""
         valori=pd.DataFrame(Dati[indice])
+        valori.columns = valori.columns.astype(str)
         column_headers = list(valori.columns.values)
         tipologia=column_headers[1]
         tipologia=str(tipologia)

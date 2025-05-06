@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt #traditional plots
 import plotly.express as px #dynamic plots
 from sklearn.preprocessing import scale
 import numpy as np
-# import webview
+import webview
 import os
 from exploration import passaggioAutoscaling
 from exploration import passaggioMean

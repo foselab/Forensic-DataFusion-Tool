@@ -1,10 +1,10 @@
 plotly
 #webview
-webview_python
+#webview_python
+pywebview
 scikit-learn
 pypdf
 seaborn
-pandastable
 pandastable
 #scikit
 future

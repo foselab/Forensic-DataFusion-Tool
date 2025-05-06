@@ -25,24 +25,21 @@ root.resizable(0,0)
 
 """ Serve per prendere il path del computer su cui sta girando il codice """
 def resource_path(relative_path):
-    
-    try:
-        
+    if hasattr(sys, '_MEIPASS'):
         base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath("../code")
+    else:
+        base_path = os.path.abspath(os.path.dirname(__file__))
 
     return os.path.join(base_path, relative_path)
 
-
-Logo = resource_path("Logo.png")
 
 """ Inserimento frame, button, label e logo"""
 frameDatabase = Frame(root, bg="white")
 frameDatabase.pack(side=TOP, pady=30)
 lbl = Label(frameDatabase, text="Low Level Data Fusion\n Developed by" , font=('arial', 25), bd=18, bg="white")
 lbl.grid(row=2, padx=60) 
-img = ImageTk.PhotoImage(Image.open("logo1.png"))
+logo_path = resource_path("logo1.png")
+img = ImageTk.PhotoImage(Image.open(logo_path))
 lbl2=Label(frameDatabase, image=img)
 lbl2.grid(row=3, padx=10) 
 btn2 = Button(frameDatabase, text="Start", font=('arial', 18), width=30, bg="red", command=apriPagina_iniziale)

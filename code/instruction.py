@@ -1,6 +1,7 @@
 """" Developed by Michele Verdi"""
 
 """"Importazione librerie"""
+import os
 import tkinter as tk
 from tkinter import *
 from pypdf import PdfReader
@@ -29,7 +30,8 @@ def apripdf():
     
    
     """Lettura del pdf e inserimento nella pagina"""
-    reader = PdfReader("../documents/Instruction.pdf")
+    pdf_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../documents/Instruction.pdf"))
+    reader = PdfReader(pdf_path)
     testo = ""
     for page in reader.pages:
         testo += page.extract_text() + "\n"

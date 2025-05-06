@@ -11,9 +11,9 @@ import plotly.express as px #dynamic plots
 from print_table import stampaTabelle
 import scipy.stats
 import os
-# import webview
+import webview
 from print_table import stampaTabelle
-#from scikit import decomposition
+from sklearn import decomposition
 
 """Ricezione dati"""
 def passaggioColonne(colonne):
