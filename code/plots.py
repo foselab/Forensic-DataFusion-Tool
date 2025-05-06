@@ -25,6 +25,23 @@ def elencofileSceltaGrafici(elenco,numerofile):
     ElencoFile=elenco
     nfile=numerofile
 
+def generate_bivariate_plots(df, x_var, y_var, typology):
+    fig, axs=plt.subplots(ncols=2, nrows=2, figsize=(20, 14))
+    fig.suptitle('Bivariate Plots')
+    sns.set_style("whitegrid")
+    sns.histplot(ax=axs[0,0], data=df, x=x_var, hue=typology) 
+    sns.histplot(ax=axs[0,1], data=df, x=x_var, hue=typology, kde=True, stat='density')
+    
+    sns.displot(df, x=x_var, hue = typology, kind = 'kde')
+    
+    numeric_data = df.select_dtypes(include=[np.number])
+    sns.heatmap(numeric_data.corr(), annot=False, cmap='Reds', vmin=-1, vmax=1, ax=axs[1,0])
+    sns.scatterplot(data=df, x=x_var, y=y_var, hue = typology, ax=axs[1,1])
+    sns.set_style("whitegrid")
+
+    fig.tight_layout()
+    return fig
+
 def apriSceltaGrafici():
     """ Creazione pagina che visualizza scelta_Grafici.py"""
     root = tk.Tk()
@@ -201,22 +218,11 @@ def apriSceltaGrafici():
         variabile2=str(selected_option3)
         
         """ Creazione prima immagine""" 
-        fig1, axs=plt.subplots(ncols=2, nrows=2)
-        fig1.suptitle('Grafici Bivariate')
-        sns.set_style("whitegrid")
-        sns.histplot(ax=axs[0,0], data=valori, x=variabile, hue=tipologia) 
-        sns.histplot(ax=axs[0,1], data=valori, x=variabile, hue=tipologia, kde=True, stat='density')
-        
-        sns.displot(valori, x=variabile, hue = tipologia, kind = 'kde')
-        
-        numeric_data = valori.select_dtypes(include=[np.number])
-        sns.heatmap(numeric_data.corr(), annot=False, cmap='Reds', vmin=-1, vmax=1, ax=axs[1,0])
-        sns.scatterplot(data=valori, x=variabile, y=variabile2, hue = tipologia, ax=axs[1,1])
-        sns.set_style("whitegrid")
+        fig1 = generate_bivariate_plots(valori, variabile, variabile2, tipologia)
           
         """Creazione seconda immagine"""
         global fig2   
-        fig2 = px.scatter(valori, x=variabile, y=variabile2, color=tipologia)   
+        fig2 = px.scatter(valori, x=variabile, y=variabile2, color=tipologia)
         
         """Visualizzazione prima immagine"""
         fig1.show()
@@ -225,8 +231,7 @@ def apriSceltaGrafici():
         fig2.write_html('prima_figura.html', auto_open=False)
         html_file_path = os.path.join(os.getcwd(), "prima_figura.html")
         webview.create_window("Visualizzazione del grafico", url=html_file_path, width=800, height=600)
-        webview.start()
-        
+        webview.start()        
         
     def openMultivariate():
         """Funzione per creare i grafici bivariati"""
