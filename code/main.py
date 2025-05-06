@@ -4,7 +4,7 @@ from plots import generate_bivariate_plots # change in capsule
 
 ''' 
 TO BE SET AS FILE TO RUN IN THE CAPSULE
-Note: all imports to libraries for GUIs such as webview and tkinter in the imported modules should be commented in the capsule
+Note: all imports in the imported modules to GUI libraries such as webview and tkinter should be commented in the capsule
 '''
 
 ## Read the table
