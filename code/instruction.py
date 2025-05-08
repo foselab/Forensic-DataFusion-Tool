@@ -30,7 +30,7 @@ def apripdf():
     
    
     """Lettura del pdf e inserimento nella pagina"""
-    pdf_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../documents/Instruction.pdf"))
+    pdf_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "resources", "Instruction.pdf"))
     reader = PdfReader(pdf_path)
     testo = ""
     for page in reader.pages:

@@ -5,6 +5,7 @@ import pandas as pd
 from pre_processing import passaggioPreProcessing
 from print_table import stampaTabelle
 from exploration import passaggioExploration
+from core import remove_row, remove_column
 
 def passaggiodataremoval(dati,num):
     global Dati
@@ -152,20 +153,11 @@ def dataRemoval():
         riga=selected_option1 
         b=0
         c=0
-        indicetemp=0
         if riga!='':
             for x in range (Num+1):
                 array[b]=Dati[x]
-                df =pd.DataFrame(array[b])
-                column_headers = list(df.columns.values)
-                ID=column_headers[0]
-                IDrighe = df[ID].to_numpy()
-                nrighe=len(IDrighe)
-                for x in range (nrighe) :
-                    if str(IDrighe[x])==str(riga):
-                        indicetemp=x
-        
-                temp=df.drop(df.index[indicetemp])
+                df =pd.DataFrame(array[b])        
+                temp=remove_row(df, riga)
                 nuovalista[c]=temp
                 stampaTabelle(nuovalista,c,"Dati aggiornati", True)
                 
@@ -199,8 +191,7 @@ def dataRemoval():
     newlist={}
         
     def removecolumn() :
-        colonna=selected_option3  
-        val=0
+        colonna=selected_option3
         b=0
         c=0
        
@@ -208,13 +199,7 @@ def dataRemoval():
             for x in range (Num+1):
                 if x==indice:
                     dataframe= pd.DataFrame(Dati[indice])
-            
-                    column_headers=list(dataframe.columns.values)
-                    for y in range (len(column_headers)):
-                        if str(column_headers[y])==str(colonna):
-                            val=y
-                    temp=dataframe     
-                    temp=temp.drop(temp.columns[val], axis=1)
+                    temp=remove_column(dataframe, colonna)
                     newlist[c]=temp
                     stampaTabelle(newlist,c,"Dati aggiornati", True)
                     c+=1

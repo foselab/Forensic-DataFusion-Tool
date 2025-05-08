@@ -5,13 +5,11 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 import pandas as pd
-import seaborn as sns
-import numpy as np
 import plotly as plotly
 import matplotlib.pyplot as plt #traditional plots
-import plotly.express as px #dynamic plots
 import os 
 import webview
+from core import generate_bivariate_plots, generate_bivariate_html_scatter, generate_multivariate_html_scatters
 
 """Ricezione dati"""
 def passaggioscelta_grafici(dati,num):
@@ -24,23 +22,6 @@ def elencofileSceltaGrafici(elenco,numerofile):
     global ElencoFile, nfile
     ElencoFile=elenco
     nfile=numerofile
-
-def generate_bivariate_plots(df, x_var, y_var, typology):
-    fig, axs=plt.subplots(ncols=2, nrows=2, figsize=(20, 14))
-    fig.suptitle('Bivariate Plots')
-    sns.set_style("whitegrid")
-    sns.histplot(ax=axs[0,0], data=df, x=x_var, hue=typology) 
-    sns.histplot(ax=axs[0,1], data=df, x=x_var, hue=typology, kde=True, stat='density')
-    
-    sns.displot(df, x=x_var, hue = typology, kind = 'kde')
-    
-    numeric_data = df.select_dtypes(include=[np.number])
-    sns.heatmap(numeric_data.corr(), annot=False, cmap='Reds', vmin=-1, vmax=1, ax=axs[1,0])
-    sns.scatterplot(data=df, x=x_var, y=y_var, hue = typology, ax=axs[1,1])
-    sns.set_style("whitegrid")
-
-    fig.tight_layout()
-    return fig
 
 def apriSceltaGrafici():
     """ Creazione pagina che visualizza scelta_Grafici.py"""
@@ -222,7 +203,7 @@ def apriSceltaGrafici():
           
         """Creazione seconda immagine"""
         global fig2   
-        fig2 = px.scatter(valori, x=variabile, y=variabile2, color=tipologia)
+        fig2 = generate_bivariate_html_scatter(valori, variabile, variabile2, tipologia)
         
         """Visualizzazione prima immagine"""
         fig1.show()
@@ -245,15 +226,12 @@ def apriSceltaGrafici():
         variabile2=str(selected_option3)
         variabile3=str(selected_option4)
         
-        """Creazione terza immagine e visualizzazione"""
-        fig3 = px.scatter(valori, x=variabile, y=variabile2, color=tipologia, size=variabile3) 
+        """Creazione terza e quarta immagine e visualizzazione"""
+        fig3, fig4 = generate_multivariate_html_scatters(valori, variabile, variabile2, variabile3, tipologia)
         fig3.write_html('seconda_figura.html', auto_open=False)
         html_file_path = os.path.join(os.getcwd(), "seconda_figura.html")
         webview.create_window("Visualizzazione del grafico", url=html_file_path, width=800, height=600)
         webview.start()
-        
-        """Creazione quarta immagine e visualizzazione"""
-        fig4 = px.scatter(valori, x=variabile, y=variabile2, color=variabile3)  
         fig4.write_html('terza_figura.html', auto_open=False)
         html_file_path2 = os.path.join(os.getcwd(), "terza_figura.html")
         webview.create_window("Visualizzazione del grafico", url= html_file_path2, width=800, height=600)

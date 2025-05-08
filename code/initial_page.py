@@ -6,7 +6,7 @@ from pandas import read_excel, DataFrame
 from tkinter import *
 from tkinter import filedialog
 from table import caricamentoTabelle
-from choose_PreProcessing import apriSceltaOperazioni
+from choose_pre_processing import apriSceltaOperazioni
 from plots import apriSceltaGrafici, elencofileSceltaGrafici
 from data_removal import elencofile
 from exploration import elencofileExploration

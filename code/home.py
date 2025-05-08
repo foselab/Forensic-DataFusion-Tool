@@ -30,7 +30,7 @@ def resource_path(relative_path):
     else:
         base_path = os.path.abspath(os.path.dirname(__file__))
 
-    return os.path.join(base_path, relative_path)
+    return os.path.join(base_path, "resources", relative_path)
 
 
 """ Inserimento frame, button, label e logo"""
@@ -38,7 +38,7 @@ frameDatabase = Frame(root, bg="white")
 frameDatabase.pack(side=TOP, pady=30)
 lbl = Label(frameDatabase, text="Low Level Data Fusion\n Developed by" , font=('arial', 25), bd=18, bg="white")
 lbl.grid(row=2, padx=60) 
-logo_path = resource_path("logo1.png")
+logo_path = resource_path("logo.png")
 img = ImageTk.PhotoImage(Image.open(logo_path))
 lbl2=Label(frameDatabase, image=img)
 lbl2.grid(row=3, padx=10) 

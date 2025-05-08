@@ -5,9 +5,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 import pandas as pd
-import matplotlib.pyplot as plt #traditional plots
 import plotly.express as px #dynamic plots
-from sklearn.preprocessing import scale
 import numpy as np
 import webview
 import os
@@ -17,7 +15,7 @@ from exploration import passaggioSnv
 from exploration import passaggioSavitzki
 from exploration import passaggioSnv_savitzki
 from exploration import passaggioColonne
-from scipy.signal import savgol_filter
+from core import compute_autoscaling, compute_meancentering, compute_snv, compute_savitzky_golay, generate_preprocessing_plot
 
 
 """Ricezione dati"""
@@ -105,7 +103,6 @@ def PreProcessing():
         """Creazione tabella contenente tutto tranne le prime due colonne (ID e Sostanze)"""
         X1=temp1.drop(temp1.columns[[0,1]], axis=1)
         
-        
         """Creazione fig1  e visualizzazione"""
         fig1=px.parallel_coordinates(X1)
         fig1.write_html('quarta_figura.html', auto_open=False)
@@ -114,10 +111,7 @@ def PreProcessing():
         webview.start()
 
         """creazione x_autosc """
-        X_autosc = scale(X1.values)
-        X_autosc = pd.DataFrame(X_autosc)
-        X_autosc.columns = X1.columns
-        X_autosc.index = X1.index
+        X_autosc = compute_autoscaling(X1)
 
         passaggioAutoscaling(X_autosc, "si" )
         
@@ -136,7 +130,7 @@ def PreProcessing():
         
         """Creazione tabella contenente tutto tranne le prime due colonne (ID e Sostanze)"""
         X2=temp2.drop(temp2.columns[[0,1]], axis=1)
-        data_centered = X2.apply(lambda x: x-x.mean()) 
+        data_centered = compute_meancentering(X2)
         data_centered.mean()
         
         passaggioMean(data_centered, "si")
@@ -147,15 +141,6 @@ def PreProcessing():
         html_file_path5 = os.path.join(os.getcwd(), "sesta_figura.html")
         webview.create_window("Visualizzazione del grafico", url=html_file_path5, width=800, height=600)
         webview.start()
-        
-    def calcolatesnv(input_data):
-        """Creo un nuovo array e lo popolo con i dati corretti"""
-        output_data = np.zeros_like(input_data)
-        for i in range(input_data.shape[0]):
-            """Applico correzioni all'array"""
-            output_data[i,:] = (input_data[i,:] - np.mean(input_data[i,:])) / np.std(input_data[i,:])
- 
-        return output_data
            
     def snv():
         """funzione snv"""
@@ -173,15 +158,10 @@ def PreProcessing():
         X3=temp4.drop(temp4.columns[[0,1]], axis=1)
         X5=temp4.drop(temp4.columns[[0,1]], axis=1)
         
-        Xsnv = calcolatesnv(X3.values)
+        Xsnv = compute_snv(X3.values)
         X3=np.array(X3)
         """Creazione fig4"""
-        fig4, (ax1,ax2) = plt.subplots(2, figsize=(15,15))
-        ax1.plot(arrayColonne1,  X3.T)
-        ax1.set_title('Original data')
-        ax2.plot(arrayColonne1,  Xsnv.T)
-        ax2.set_title('SNV') 
-        
+        fig4 = generate_preprocessing_plot(X3, Xsnv, arrayColonne1, 'SNV')
         """visualizzazione fig4 """
         fig4.show()
         
@@ -204,15 +184,11 @@ def PreProcessing():
         """Creo due database temporanei, uno su cui svolgere le operazioni,uno per mandare i dati corretti ad un'altra pagina python"""
         X4=temp6.drop(temp6.columns[[0,1]], axis=1)
         X7=temp6.drop(temp6.columns[[0,1]], axis=1)
-        X_savgol = savgol_filter(X4, 7, polyorder = 2, deriv=0)
-       
+        X_savgol = compute_savitzky_golay(X4)
+
         X4=np.array(X4)
         """Creazione fig5"""
-        fig5, (ax7,  ax3) = plt.subplots(2,figsize=(15,15))
-        ax7.plot(arrayColonne2,  X4.T)
-        ax7.set_title('Original data')
-        ax3.plot(arrayColonne2,  X_savgol.T)
-        ax3.set_title('Savitzki-Golay - smoothing')
+        fig5 = generate_preprocessing_plot(X4, X_savgol, arrayColonne2, 'Savitzki-Golay - smoothing')
         
         """Visualizza fig5"""
         fig5.show()
@@ -239,17 +215,12 @@ def PreProcessing():
         """Creo due database temporanei, uno su cui svolgere le operazioni,uno per mandare i dati corretti ad un'altra pagina python"""
         X5=temp8.drop(temp8.columns[[0,1]], axis=1)
         X8=temp8.drop(temp8.columns[[0,1]], axis=1)
-        X_savgol = savgol_filter(X5, 7, polyorder = 2, deriv=0)
-        X_snv_savgol = calcolatesnv(X_savgol)
+        X_savgol = compute_savitzky_golay(X5)
+        X_snv_savgol = compute_snv(X_savgol)
        
         X5=np.array(X5)
         """Creazione fig6"""
-        fig6, (ax8, ax4) = plt.subplots(2,figsize=(15,15))
-        
-        ax8.plot(arrayColonne3,  X5.T)
-        ax8.set_title('Original data')
-        ax4.plot(arrayColonne3,  X_snv_savgol.T)
-        ax4.set_title('Savitzki-Golay - smoothing + SNV')
+        fig6 = generate_preprocessing_plot(X5, X_snv_savgol, arrayColonne3, 'Savitzki-Golay - smoothing + SNV')
         """Visualizzazione fig6"""
         fig6.show()
         

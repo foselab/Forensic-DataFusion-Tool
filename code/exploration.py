@@ -12,8 +12,7 @@ from print_table import stampaTabelle
 import scipy.stats
 import os
 import webview
-from print_table import stampaTabelle
-from sklearn import decomposition
+from core import fuse_data, compute_pca, generate_scree_plots, get_scores_and_loadings, generate_pca_html_2d_scatters, generate_pca_html_3d_scatters, detect_outliers, generate_outliers_html_scatters
 
 """Ricezione dati"""
 def passaggioColonne(colonne):
@@ -104,56 +103,19 @@ def Pca():
     variabile=newarray
     
     n_components=int(selected_option1)
-    pca = decomposition.PCA(n_components)  
-    variabile=variabile.drop(variabile.columns[[0,1]], axis=1)
-    variabile.columns=variabile.columns.astype(str)
-    pca_model = pca.fit_transform(variabile)
-    PC_values = np.arange(pca.n_components_) + 1  
-    plt.plot(PC_values, pca.explained_variance_ratio_, 'ro-', linewidth=2)
-    plt.title('Scree Plot')
-    plt.xlabel('Principal Component')
-    plt.ylabel('Proportion of Variance Explained')
-    plt.show()
-    
-    """Valuta la Explained variance (EV%) e il cumulative explained variance (CEV%)""" 
-    print ("Proportion of Variance Explained : ", pca.explained_variance_ratio_)  
-    out_sum = np.cumsum(pca.explained_variance_ratio_)  
-    print ("Cumulative Prop. Variance Explained: ", out_sum)
-    
-    
-    """ Valuta lo scree plot (sulla Cumulativ explained variance)"""
-    plt.plot(PC_values, np.cumsum(pca.explained_variance_ratio_), 'ro-', linewidth=2)
-    plt.title('Scree Plot')
-    plt.xlabel('Principal Component')
-    plt.ylabel('Cumulative Prop. Variance Explained')
-    plt.show()
-    
-    
-    """Ricostruisco il modello usando un numero deciso di PCs"""
-    pca2 = decomposition.PCA(n_components) 
-    pca2_model=pca2.fit_transform(variabile)
+    pca, transformed_data = compute_pca(n_components, variabile)
+    fig1, fig2 = generate_scree_plots(pca)
+    fig1.show()
+    fig2.show()
    
-    global variab, sostanze, scores
-    column_headers = list(newarray.columns.values)
-    variab=column_headers[0]
-    sostanze=column_headers[1] 
-    
-    scores = pd.DataFrame(data = pca2_model )
-    scores.columns = ['PC'+str(x) for x in range(1, len(scores.columns)+1)] 
-    scores.index = newarray.index       
-    scores = pd.concat([newarray[variab], newarray[sostanze], scores], axis = 1) 
+    global variab, sostanze, scores, loadings
+    variab = newarray.columns[0]
+    sostanze = newarray.columns[1]
+    scores, loadings = get_scores_and_loadings(pca, transformed_data, newarray)
+
     valori={}
     valori[1]=scores 
     stampaTabelle(valori,1, "Scores", True)
-    
-    """Preparo il dataframe loadings"""
-    global loadings
-    newarray.columns=newarray.columns.astype(str)
-    temp=newarray.drop(newarray.columns[[0,1]], axis=1)
-    
-    loadings = pd.DataFrame(pca.components_.T, index=temp.columns) 
-    loadings.columns = ['PC'+str(x) for x in range(1, len(loadings.columns)+1)] 
-    loadings["Attributes"] = loadings.index
     
     valori[1]=loadings
     stampaTabelle(valori,1, "Loadings", True)
@@ -166,33 +128,19 @@ def graficiPca():
     variabiley=str(selected_option3)
     variabilez=str(selected_option4)
     
+    fig, fig2 = generate_pca_html_2d_scatters(scores, loadings, sostanze, variabilex, variabiley)
+    fig1 = generate_pca_html_3d_scatters(scores, sostanze, variabilex, variabiley, variabilez)
+
     """Visaulizzo gli scores"""
-    fig = px.scatter(scores, x=variabilex, y=variabiley, color=str(sostanze), hover_data=[str(sostanze)], hover_name=scores.index) 
-    fig.update_xaxes(zeroline=True, zerolinewidth=1, zerolinecolor='Black')
-    fig.update_yaxes(zeroline=True, zerolinewidth=1, zerolinecolor='Black')
-    fig.update_layout(
-    height=600,
-    width=800,
-    title_text='Scores Plot colored by'+ str(sostanze))
     fig.write_html('settima_figura.html', auto_open=False)
     html_file_path6 = os.path.join(os.getcwd(), "settima_figura.html")
     webview.create_window("Visualizzazione del grafico", url=html_file_path6, width=800, height=600)
     webview.start()
-    
-    fig1 = px.scatter_3d(scores, x=variabilex, y=variabiley, z=variabilez,color=str(sostanze), hover_data=[str(sostanze)], hover_name=scores.index)
     fig1.write_html('ottava_figura.html', auto_open=False)
     html_file_path7 = os.path.join(os.getcwd(), "ottava_figura.html")
     webview.create_window("Visualizzazione del grafico", url=html_file_path7, width=800, height=600)
     webview.start()
     """Visualizzo i loadings"""
-    fig2 = px.scatter(loadings, x=variabilex, y=variabiley, text="Attributes")  
-    fig2.update_xaxes(zeroline=True, zerolinewidth=1, zerolinecolor='Black')
-    fig2.update_yaxes(zeroline=True, zerolinewidth=1, zerolinecolor='Black')
-    fig2.update_traces(textposition='top center')
-    fig2.update_layout(
-    height=600,
-    width=800,
-    title_text='Loadings Plot')
     fig2.write_html('nona_figura.html', auto_open=False)
     html_file_path8 = os.path.join(os.getcwd(), "nona_figura.html")
     webview.create_window("Visualizzazione del grafico", url=html_file_path8, width=800, height=600)
@@ -208,75 +156,13 @@ def mean_confidence_interval(data, confidence):
 
 def outlierDetection1():
     temp2=pd.DataFrame(newarray)
-    X1=temp2.drop(temp2.columns[[0,1]], axis=1)
-   
-    X1.columns=X1.columns.astype(str)
     n_components=int(selected_option1)
-    """Prendo gli scores PCA"""
-    T = scores.iloc[:,2:n_components+2] 
-    
-    """Prendo i loadings PCA"""
-    P = loadings.iloc[:,0:n_components]  
-    
-    """Calcolo error array"""
-    Err = X1 - np.dot(T,P.T)  
-    
-    """Calcolo Q-residuals"""
-    Q = np.sum(Err**2, axis=1)
-    """Calcolo Hotelling's T-squared"""
-    Tsq = np.sum((T/np.std(T, axis=0))**2, axis=1)  
-
-    
-    """Fisso il livello di confidenza"""
-    conf = 0.95 
-    Tsq_conf = mean_confidence_interval(Tsq.values, confidence=conf)
-    Tsq_conf = Tsq_conf[2]
-    Q_conf = mean_confidence_interval(Q.values, confidence=conf)
-    Q_conf = Q_conf[2]
-    
-    """Creo un dataframe usando solo T2 e Q-residuals"""
-    hot_q_data = {'T2': Tsq, 'Qres': Q, str(sostanze): newarray[str(sostanze)]}  
-    hot_q_data = pd.DataFrame(hot_q_data, index = newarray.index)
-    valori2={}
-    valori2[1]= hot_q_data
-    stampaTabelle(valori2,1, "Dataframe with T2 and Q-Residuals", False)
-   
-    """Plot l'Hotelling T2 vs  Q-residuals plot"""
-    fig1 = px.scatter(hot_q_data, x="T2", y="Qres", hover_data={'Sample': (hot_q_data.index)},  color = str(sostanze))  
-    fig1.add_hline(y=abs(Q_conf),line_dash="dot", line_color='Red')
-    fig1.add_vline(x=Tsq_conf,line_dash="dot", line_color='Red')
-    fig1.update_traces(textposition='top center')
-    fig1.update_layout(
-        height=600,
-        width=800,
-    title_text="Hotelling's T2 vs Q-residuals")
+    hot_q_data, normalized_hot_q_data, Q, Tsq, Q_conf, Tsq_conf = detect_outliers(temp2, scores, loadings, sostanze, n_components)
+    fig1, fig_normalized = generate_outliers_html_scatters(hot_q_data, normalized_hot_q_data, Q, Tsq, Q_conf, Tsq_conf, sostanze)
     fig1.write_html('decima_figura.html', auto_open=False)
     html_file_path9 = os.path.join(os.getcwd(), "decima_figura.html")
     webview.create_window("Visualizzazione del grafico", url=html_file_path9, width=800, height=600)
     webview.start()
-    
-    """Normalizzo il Q-residuals e l'Hotelling's T-squared"""
-    normalized_Q = Q / np.max(Q)
-    normalized_Tsq = Tsq / np.max(Tsq)
-    
-    """Creo dataframe con valori normalizzati"""
-    normalized_hot_q_data = {'T2': normalized_Tsq, 'Qres': normalized_Q, str(sostanze): newarray[str(sostanze)]} 
-    normalized_hot_q_data = pd.DataFrame(normalized_hot_q_data, index=newarray.index)
-
-    
-    """plot il normalizzato Hotelling T2 vs Q-residuals plot"""
-    fig_normalized = px.scatter(
-    normalized_hot_q_data, x="T2", y="Qres", 
-    hover_data={'Sample': (normalized_hot_q_data.index)}, color=str(sostanze))
-    fig_normalized.add_hline(y=abs(Q_conf / np.max(Q)), line_dash="dot", line_color='Red')
-    fig_normalized.add_vline(x=Tsq_conf / np.max(Tsq), line_dash="dot", line_color='Red')
-    fig_normalized.update_traces(textposition='top center')
-    fig_normalized.update_layout(
-        height=600,
-        width=800,
-        title_text="Normalized Hotelling's T2 vs Q-residuals"
-    )
-    
     fig_normalized.write_html('undicesima_figura.html', auto_open=False)
     html_file_path10 = os.path.join(os.getcwd(), "undicesima_figura.html")
     webview.create_window("Visualizzazione del grafico", url=html_file_path10, width=800, height=600)
@@ -373,10 +259,7 @@ def apriSceltaExploration():
             """Funzione concatena dati, serve per ocncatenare le tabelle che gli vengono passate"""
             global a
             database=database.drop(database.columns[1], axis=1)
-            column_headers = list(database.columns.values)
-            ID=column_headers[0]
-            ID=str(ID)
-            result= pd.merge(primo,database, on=[ID] )
+            result = fuse_data(primo, database)
             primo=result
             passaggionewarray(primo)
             newprimo={}
