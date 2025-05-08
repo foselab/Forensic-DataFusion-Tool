@@ -10,9 +10,13 @@ results_path = os.path.join(base_path, "..", "results")
 if not os.path.exists(results_path):
     os.makedirs(results_path)
 
+# NOTE: when running in the capsule environment, replace the path logic above with:
+# data_path = "/data"
+# results_path = "/results"
+
 ## Read the table
 print("Reading Excel file...")
-df = read_excel(os.path.join(data_path, "spettri_QEPAS_v0.2.xlsx")) # change in capsule
+df = read_excel(os.path.join(data_path, "spettri_QEPAS_v0.2.xlsx"))
 df.columns = df.columns.astype(str)
 print("Data loaded successfully with shape:", df.shape)
 
