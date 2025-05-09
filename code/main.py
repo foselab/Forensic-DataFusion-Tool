@@ -14,15 +14,33 @@ if not os.path.exists(results_path):
 # data_path = "/data"
 # results_path = "/results"
 
+## === Configuration Section ===
+## Modify the following parameters to run the analysis on your dataset
+# Name of the input Excel file (must be placed in the /data folder)
+input_xlsx = "spettri_QEPAS_v0.2.xlsx"
+# Column names (as strings) to use for bivariate scatter plot (must match headers in Excel file)
+x_var = "8.0126"
+y_var = "9.0877"
+# ID of the row and name of the column to remove from the dataset (as strings)
+# Row is expected to match an entry in the first column
+row = "2"
+column = "8.0126"
+# Number of principal components to retain in PCA
+n_components = 6
+# Name of the column containing class labels for color coding in PCA and outlier plots
+class_column = "Class"
+# Principal components to use for 2D PCA score/loadings plots
+pc_x = "PC1"
+pc_y = "PC2"
+## ==================================
+
 ## Read the table
 print("Reading Excel file...")
-df = read_excel(os.path.join(data_path, "spettri_QEPAS_v0.2.xlsx"))
+df = read_excel(os.path.join(data_path, input_xlsx))
 df.columns = df.columns.astype(str)
 print("Data loaded successfully with shape:", df.shape)
 
 ## Show Bivariate Graphs
-x_var = "8.0126"
-y_var = "9.0877"
 assert x_var in df.columns and y_var in df.columns
 column_headers = list(df.columns.values)
 typology = str(column_headers[1])
@@ -33,8 +51,6 @@ fig.savefig(bivariate_path)
 print(f"Bivariate plot saved to: {bivariate_path}")
 
 ## Data Removal
-row = "2"
-column = "8.0126"
 print(f"Removing row with ID = {row} and column = {column}...")
 df = remove_row(df, row)
 df = remove_column(df, column)
@@ -65,7 +81,6 @@ fused_df.to_excel(fused_data_path, index=False)
 print(f"Fused dataset saved to: {fused_data_path}")
 
 ## Principal Component Analysis
-n_components = 6
 print("Computing PCA with", n_components, "components...")
 pca, transformed_data = compute_pca(n_components, fused_df)
 fig1, fig2 = generate_scree_plots(pca)
@@ -86,9 +101,6 @@ print(f"PCA scores saved to: {scores_path}")
 print(f"PCA loadings saved to: {loadings_path}")
 
 ## PCA Plots
-pc_x = "PC1"
-pc_y = "PC2"
-class_column = "Class"
 fig1, fig2 = generate_pca_html_2d_scatters(scores_df, loadings_df, class_column, pc_x, pc_y)
 pca_scores_html_path = os.path.join(results_path, "pca_scores.html")
 pca_loadings_html_path = os.path.join(results_path, "pca_loadings.html")
